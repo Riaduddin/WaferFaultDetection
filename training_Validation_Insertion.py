@@ -20,3 +20,23 @@ class train_validation:
             regex = "['wafer']+['\_'']+[\d_]+[\d]+\.csv"    #self.raw_data.manualRegexCreation()
 
             self.raw_data.validationFileNameRaw(regex, LengthOfDateStampInFile, LengthOfTimeStampInFile)
+
+            self.raw_data.validateColumnLength(noofcolumns)
+
+            self.raw_data.validateMissingValuesInWholeColumn()
+            self.log_writer.log(self.file_object, "Raw Data Validation Complete!!")
+
+            self.log_writer.log(self.file_object, "Starting Data Transforamtion!!")
+
+            self.dataTransform.replaceMissingWithNull()
+            self.log_writer.log(self.file_object, "DataTransformation Completed!!!")
+
+            self.log_writer.log(self.file_object,
+                                "Creating Training_Database and tables on the basis of given schema!!!")
+            self.dBOperation.createTableDb('Training', column_names)
+            self.log_writer.log(self.file_object, "Table creation Completed!!")
+            self.log_writer.log(self.file_object, "Insertion of Data into Table started!!!!")
+
+            self.dBOperation.insertIntoTableGoodData('Training')
+            self.log_writer.log(self.file_object, "Insertion in Table completed!!!")
+            self.log_writer.log(self.file_object, "Deleting Good Data Folder!!!")
