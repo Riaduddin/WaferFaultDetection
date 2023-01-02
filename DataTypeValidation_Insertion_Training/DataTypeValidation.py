@@ -106,3 +106,38 @@ class dBOperation:
 
         conn.close()
         log_file.close()
+
+    def selectingDatafromtableintocsv(self,Database):
+
+        self.fileFromDb = 'Training_FileFromDB/'
+        self.fileName = 'InputFile.csv'
+        log_file = open("Training_Logs/ExportToCsv.txt", 'a+')
+
+        try:
+            conn=self.dataBaseConnection(Database)
+            sqlSelect="SELECT * FROM Good_Raw_Data"
+            cursor=conn.cursor()
+
+            cursor.execute(sqlSelect)
+
+            results = cursor.fetchall()
+
+            headers = [i[0] for i in cursor.description]
+
+            if not os.path.isdir(self.fileFromDb):
+                os.makedirs(self.fileFromDb)
+
+            #open CSV file for writing
+            csvfile=csv.writer(open(self.fileFromDb+self.fileName, 'w',newline=''),
+                               delimiter=',',lineterminator='\r\n',quoting=csv.QUOTE_ALL, escapechar='\\')
+
+            #Add the headers and data to the CSV file
+            csvfile.writerow(headers)
+            csvfile.writerows(results)
+
+            self.logger.log(log_file, "File exported successfully!!!")
+            log_file.close()
+
+        except Exception as e:
+            self.logger.log(log_file, "File exporting failed. Error : %s" % e)
+            log_file.close()
