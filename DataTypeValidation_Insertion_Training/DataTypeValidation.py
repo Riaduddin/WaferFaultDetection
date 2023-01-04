@@ -33,8 +33,9 @@ class dBOperation:
         try:
             conn = self.dataBaseConnection(DatabaseName)
             c = conn.cursor()
+            #checking the table is exists or not
             c.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Good_Raw_Data'")
-            if c.fectone()[0]==1:
+            if c.fetchone()[0]==1:
                 conn.close()
                 file = open("Training_Logs/DbTableCreateLog.txt", 'a+')
                 self.logger.log(file, "Tables created successfully!!")
@@ -86,7 +87,7 @@ class dBOperation:
                     next(f)
                     reader=csv.reader(f,delimiter='\n')
                     for line in enumerate(reader):
-                        for list_ in (line[1]):
+                        for list_1 in (line[1]):
                             try:
                                 conn.execute('INSERT INTO Good_Raw_Data values ({values})'.format(values=(list_1)))
                                 self.logger.log(log_file, " %s: File loaded successfully!!" % file)
